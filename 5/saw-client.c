@@ -60,7 +60,6 @@ int main() {
             break;
 
         if (strncmp(buf, "DROP", 4) == 0) {
-
             int seq = atoi(buf + 5);
             printf("[SAW] Receiver: Frame %d not received (simulated drop) → "
                    "sending NAK %d\n\n",
