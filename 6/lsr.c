@@ -1,70 +1,79 @@
-#include <limits.h>
 #include <stdio.h>
-
-#define MAX 10
+#define INF 99999
 
 int main() {
     int n, src;
-    int graph[MAX][MAX];
-
-    printf("No of routers : ");
+    printf("enter no of nodes : ");
     scanf("%d", &n);
 
-    printf("Enter cost matrix: \n");
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            scanf("%d", &graph[i][j]);
-        }
-    }
+    int visited[n], distance[n], parent[n];
+    int weights[n][n];
 
-    printf("Enter source router : ");
+    printf("enter weight matrix (0 = no edge)\n");
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < n; j++)
+            scanf("%d", &weights[i][j]);
+
+    printf("enter source node : ");
     scanf("%d", &src);
 
-    int dist[MAX], visited[MAX] = {0}, parent[MAX];
     for (int i = 0; i < n; i++) {
-        dist[i] = INT_MAX;
+        visited[i] = 0;
+        distance[i] = INF;
         parent[i] = -1;
     }
-
-    dist[src] = 0;
+    distance[src] = 0;
     parent[src] = src;
 
     for (int count = 0; count < n - 1; count++) {
-        int min = INT_MAX;
+
         int u = -1;
-
-        for (int i = 0; i < n; i++) {
-            if (!visited[i] && dist[i] < min) {
-                min = dist[i];
+        for (int i = 0; i < n; i++)
+            if (!visited[i] && (u == -1 || distance[i] < distance[u]))
                 u = i;
-            }
-        }
 
+        if (u == -1 || distance[u] >= INF)
+            break;
         visited[u] = 1;
+
         for (int v = 0; v < n; v++) {
-            if (!visited[v] && graph[u][v] && dist[u] + graph[u][v] < dist[v]) {
-                dist[v] = dist[u] + graph[u][v];
+            if (visited[v])
+                continue;
+            if (weights[u][v] == 0)
+                continue;
+            if (distance[u] + weights[u][v] < distance[v]) {
+                distance[v] = distance[u] + weights[u][v];
                 parent[v] = u;
             }
         }
     }
 
-    printf("Dest\tCost\tPath\n");
+    printf("\ndest\t\tcost\t\tpath\n");
     for (int i = 0; i < n; i++) {
-        printf("%d\t%d\t", i, dist[i]);
+        if (i == src)
+            continue;
+        printf("%d\t\t", i);
 
-        int path[MAX], k = 0, j = i;
-        // recompute the path from parent
-        while (j != src) {
-            path[k++] = j;
-            j = parent[j];
+        if (distance[i] == INF) {
+            printf("INF\t\tno path\n");
+            continue;
         }
-        path[k++] = src;
+        printf("%d\t\t", distance[i]);
 
-        for (int p = k - 1; p >= 0; p--) {
-            printf("%d ", path[p]);
+        int path[n], len = 0, node = i;
+        while (node != src) {
+            path[len++] = node;
+            node = parent[node];
+        }
+        path[len++] = src;
+
+        for (int j = len - 1; j >= 0; j--) {
+            printf("%d", path[j]);
+            if (j > 0)
+                printf(" -> ");
         }
         printf("\n");
     }
+
     return 0;
 }
