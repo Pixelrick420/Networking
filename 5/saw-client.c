@@ -60,18 +60,14 @@ int main() {
             break;
 
         if (strncmp(buf, "DROP", 4) == 0) {
-            int seq = atoi(buf + 5);
-            printf("[SAW] Receiver: Frame %d not received (simulated drop) → "
-                   "sending NAK %d\n\n",
-                   seq, seq);
-            snprintf(ack, SIZE, "NAK:%d", seq);
+            snprintf(ack, SIZE, "NAK");
             send(client->fd, ack, strlen(ack), 0);
         } else if (strncmp(buf, "FRAME", 5) == 0) {
 
             int seq;
             char data[SIZE];
             sscanf(buf, "FRAME:%d:%s", &seq, data);
-            printf("[SAW] Receiver: Got frame %d [%s] → sending ACK %d\n\n",
+            printf("[SAW] Receiver: Got frame %d [%s] -> sending ACK %d\n\n",
                    seq, data, seq);
             snprintf(ack, SIZE, "ACK:%d", seq);
             send(client->fd, ack, strlen(ack), 0);

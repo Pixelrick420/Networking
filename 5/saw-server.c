@@ -100,14 +100,9 @@ int main() {
 
         if (strncmp(buf, "ACK", 3) == 0) {
             int ack_seq = atoi(buf + 4);
-            printf("[SAW] Sender: Received ACK %d → moving to next frame\n\n",
+            printf("[SAW] Sender: Received ACK %d -> moving to next frame\n\n",
                    ack_seq);
             seq++;
-        } else if (strncmp(buf, "NAK", 3) == 0) {
-            int nak_seq = atoi(buf + 4);
-            printf(
-                "[SAW] Sender: Received NAK %d → retransmitting frame %d\n\n",
-                nak_seq, nak_seq);
         }
     }
 
